@@ -68,7 +68,8 @@ class Game:
 		self.countdown_time = 20
 		self.countdown_font = pygame.font.Font('../font/Pixeled.ttf', 40)
 
-	def create_obstacle(self, x_start, y_start, offset_x, offset_y):
+	def create_obstacle(self, x_start, y_start, offset_x,
+	                    offset_y):  #AKADÁLY LÉTREHOZÁS
 		for row_index, row in enumerate(self.shape):
 			for col_index, col in enumerate(row):
 				if col == 'x':
@@ -77,11 +78,13 @@ class Game:
 					block = obstacle.Block(self.block_size, (241, 79, 80), x, y)
 					self.blocks.add(block)
 
-	def create_multiple_obstacles(self, offsets, x_start, y_start):
+	def create_multiple_obstacles(self, offsets, x_start,
+	                              y_start):  #ÖSSZES AKADÁLY LÉTREHOZÁS
 		for index, offset_x in enumerate(offsets):
 			offset_y = index * 20
 			self.create_obstacle(x_start, y_start, offset_x, offset_y)
 
+	#ALIEN LÉTREHOZÁS
 	def alien_setup(self,
 	                rows,
 	                cols,
@@ -102,7 +105,7 @@ class Game:
 					alien_sprite = Alien('red', x, y)
 				self.aliens.add(alien_sprite)
 
-	def alien_position_checker(self):
+	def alien_position_checker(self):  #ALIEN MOZGÁS JOBBRA BALRA
 		all_aliens = self.aliens.sprites()
 		for alien in all_aliens:
 			if alien.rect.right >= WIDTH:
@@ -112,12 +115,12 @@ class Game:
 				self.alien_direction = abs(self.alien_direction)
 				self.alien_move_down(self.move_down_distance)
 
-	def alien_move_down(self, distance):
+	def alien_move_down(self, distance):  #ALIEN LE FEL MOZGÁS
 		if self.aliens:
 			for alien in self.aliens.sprites():
 				alien.rect.y += distance
 
-	def alien_shoot(self):
+	def alien_shoot(self):  #ALIEN LASER
 		if self.aliens.sprites():
 			random_alien = choice(self.aliens.sprites())
 			laser_sprite = Laser(random_alien.rect.center, self.alien_laser_speed,
@@ -125,13 +128,13 @@ class Game:
 			self.alien_lasers.add(laser_sprite)
 			self.laser_sound.play()
 
-	def extra_alien_timer(self):
+	def extra_alien_timer(self):  #EXTRA ALIEN
 		self.extra_spawn_time -= 1
 		if self.extra_spawn_time <= 0:
 			self.extra.add(Extra(choice(['right', 'left']), WIDTH))
 			self.extra_spawn_time = randint(400, 800)
 
-	def collision_checks(self):
+	def collision_checks(self):  #ÜTKÖZÉSEK
 
 		# player lasers
 		if self.player.sprite.lasers:
@@ -176,66 +179,84 @@ class Game:
 					pygame.quit()
 					sys.exit()
 
-	def display_lives(self):
+	def display_lives(self):  #ÉLETERŐ
 		for live in range(self.lives - 1):
 			x = self.live_x_start_pos + (live * (self.live_surf.get_size()[0] + 10))
 			screen.blit(self.live_surf, (x, 8))
 
-	def display_score(self):
+	def display_score(self):  #PONTOK
 		score_surf = self.font.render(f'score: {self.score}', False, 'white')
 		score_rect = score_surf.get_rect(topleft=(10, -10))
 		screen.blit(score_surf, score_rect)
 
-	def display_countdown(self):
+	def display_countdown(self):  #20sec VISSZASZÁMLÁLÓ
 		countdown_surf = self.countdown_font.render(f'{self.countdown_time}',
 		                                            False, 'white')
 		countdown_rect = countdown_surf.get_rect(center=(WIDTH / 2, 30))
 		screen.blit(countdown_surf, countdown_rect)
 
-	def victory_message(self):
+	def victory_message(self):  #GYŐZELEM
 		if not self.aliens.sprites():
-			victory_surf = self.font.render('You won', False, 'white')
+			victory_surf = self.font.render('FELADAT TELJESÍTVE', False, 'white')
 			victory_rect = victory_surf.get_rect(center=(WIDTH / 2,
 			                                             screen_height / 2))
 			screen.blit(victory_surf, victory_rect)
 
-	def extra_function(self):
-		self.rect_y = -self.rect_height  # reset rectangle position
+	def extra_function(self):  #20sec upgrades
+		#self.rect_y = -self.rect_height  #visszarakja a csíkot a helyére
 		# Player upgrades
-		player_a = self.player.sprite.speed + 2
-		player_b = self.player.sprite.laser_cooldown - 75
-		player_c = self.player.sprite.laser_speed - 2
+		player_a = self.player.sprite.speed + 2  #mozgás sebesség
+		player_b = self.player.sprite.laser_cooldown - 75  #lézer visszaszámláló
+		player_c = self.player.sprite.laser_speed - 2  #lézer sebesség
 
 		# Alien upgrades
-		alien_a = self.alien_laser_speed + 2
-		alien_b = self.alien_timer - 200
-		alien_c = self.alien_direction + 2
+		alien_a = self.alien_laser_speed + 2  #lézer sebesség
+		alien_b = self.alien_timer - 200  #lézer visszaszámláló
+		alien_c = self.alien_direction + 2  #alien mozgási sebesség
 
-		# Véletlenszerűen válasszon a player vagy alien értékek közül és alkalmazza őket
-		chosen_player_upgrade = choice([player_a, player_b, player_c])
+		# véletlen upgrade
+		chosen_player_upgrade = choice([player_a, player_b, player_c])  #JÁTÉKOS
 		if chosen_player_upgrade == player_a:
-			self.player.sprite.speed = chosen_player_upgrade
+			if self.player.sprite.speed < 15:
+				self.player.sprite.speed = chosen_player_upgrade
+			else:
+				pass
 		elif chosen_player_upgrade == player_b:
-			self.player.sprite.laser_cooldown = chosen_player_upgrade
+			if self.player.sprite.laser_cooldown > 500:
+				self.player.sprite.laser_cooldown = chosen_player_upgrade
+			else:
+				pass
 		elif chosen_player_upgrade == player_c:
-			self.player.sprite.laser_speed = chosen_player_upgrade
+			if self.player.sprite.laser_speed < 20:
+				self.player.sprite.laser_speed = chosen_player_upgrade
+			else:
+				pass
 
-		chosen_alien_upgrade = choice([alien_a, alien_b, alien_c])
+		chosen_alien_upgrade = choice([alien_a, alien_b, alien_c])  #ALIEN
 		if chosen_alien_upgrade == alien_a:
-			self.alien_laser_speed = chosen_alien_upgrade
+			if self.alien_laser_speed < 15:
+				self.alien_laser_speed = chosen_alien_upgrade
+			else:
+				pass
 		elif chosen_alien_upgrade == alien_b:
-			self.alien_timer = chosen_alien_upgrade
-			pygame.time.set_timer(ALIENLASER,
-			                      self.alien_timer)  # Frissítjük az időzítőt
+			if self.alien_timer > 500:
+				self.alien_timer = chosen_alien_upgrade
+				pygame.time.set_timer(ALIENLASER,
+				                      self.alien_timer)  # Frissítjük az időzítőt
+			else:
+				pass
 		elif chosen_alien_upgrade == alien_c:
-			self.alien_direction = chosen_alien_upgrade
+			if self.alien_direction < 10:
+				self.alien_direction = chosen_alien_upgrade
+			else:
+				pass
 
-	def animation(self):
+	def animation(self):  #kék csík animáció
 		self.rect_y += 10
 		if self.rect_y >= HEIGHT:
-			self.rect_y = -self.rect_height
+			self.rect_y = -20
 
-	def run(self):
+	def run(self):  #FUTTATÁS
 		self.player.update()
 		self.alien_lasers.update()
 		self.extra.update()
@@ -289,12 +310,13 @@ if __name__ == '__main__':
 	MONITOR = pygame.display.Info()
 	WIDTH = MONITOR.current_w
 	HEIGHT = MONITOR.current_h
-	screen_height = HEIGHT
+	screen_height = HEIGHT  #ez véletlen benne maradt, s gyorsabb volt így kijavítani, bocsánat... -.-"
 	screen = pygame.display.set_mode((WIDTH, HEIGHT))
 	clock = pygame.time.Clock()
 	game = Game()
 	crt = CRT()
 
+	#időzítők
 	alientimer = game.alien_timer
 	ALIENLASER = pygame.USEREVENT + 1
 	pygame.time.set_timer(ALIENLASER, alientimer)
@@ -305,15 +327,15 @@ if __name__ == '__main__':
 	COUNTDOWN = pygame.USEREVENT + 3
 	pygame.time.set_timer(COUNTDOWN, 1000)
 
-	while True:
+	while True:  #JÁTÉKCIKLUS
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
-			if event.type == ALIENLASER:
+			if event.type == ALIENLASER:  #alien támadás
 				game.alien_shoot()
 
-			if event.type == EXTRATIMER:
+			if event.type == EXTRATIMER:  #20sec számoló
 				game.extra_function()
 				game.animation()
 
