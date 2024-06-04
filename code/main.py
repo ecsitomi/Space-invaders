@@ -18,7 +18,7 @@ class Game:
 		self.rect_width = WIDTH
 		self.rect_height = 10
 		self.rect_color = (0, 0, 255)
-		self.rect_y = -self.rect_height
+		self.rect_y = -20
 
 		# Player setup
 		player_sprite = Player((WIDTH / 2, screen_height), WIDTH)
@@ -280,8 +280,6 @@ class Game:
 		# Rect animation
 		pygame.draw.rect(screen, self.rect_color,
 		                 (0, self.rect_y, self.rect_width, self.rect_height))
-
-		self.animation()
 
 
 class CRT:  # retro kinézet
