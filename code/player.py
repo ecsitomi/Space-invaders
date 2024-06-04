@@ -6,11 +6,11 @@ class Player(pygame.sprite.Sprite):
 		super().__init__()
 		self.image = pygame.image.load('../graphics/player.png').convert_alpha()
 		self.rect = self.image.get_rect(midbottom = pos)
-		self.speed = 3
+		self.speed = 4
 		self.max_x_constraint = constraint
 		self.ready = True
 		self.laser_time = 0
-		self.laser_cooldown = 600
+		self.laser_cooldown = 900
 		self.laser_speed = -5
 
 		self.lasers = pygame.sprite.Group()

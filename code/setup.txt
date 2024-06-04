@@ -1,0 +1,11 @@
+player
+    speed (player) = 4
+    laser_cooldown = 900
+    laser_speed = -5
+
+alien 
+    alien_direction (game) = 2
+    alien_laser_speed (game) = 5
+    move_down_distance (game) = 2
+    alien_timer (game) = 1100
+

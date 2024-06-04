@@ -21,10 +21,10 @@ class Extra(pygame.sprite.Sprite):
 		
 		if side == 'right':
 			x = screen_width + 50
-			self.speed = - 3
+			self.speed = - 6
 		else:
 			x = -50
-			self.speed = 3
+			self.speed = 6
 
 		self.rect = self.image.get_rect(topleft = (x,80))
 
